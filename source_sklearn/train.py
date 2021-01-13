@@ -10,7 +10,7 @@ import pandas as pd
 import joblib
 
 ## TODO: Import any additional libraries you need to define a model
-
+from sklearn.ensemble import GradientBoostingClassifier
 
 # Provided model load function
 def model_fn(model_dir):
@@ -40,11 +40,13 @@ if __name__ == '__main__':
     parser.add_argument('--output-data-dir', type=str, default=os.environ['SM_OUTPUT_DATA_DIR'])
     parser.add_argument('--model-dir', type=str, default=os.environ['SM_MODEL_DIR'])
     parser.add_argument('--data-dir', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
+    parser.add_argument('--n_estimators', type=int, default=100)
+    parser.add_argument('--learning_rate', type=float, default=0.1)
+    parser.add_argument('--max_depth', type=int, default=3)
     
-    ## TODO: Add any additional arguments that you will need to pass into your model
     
     # args holds all passed-in arguments
-    args = parser.parse_args()
+    args = parser.parse_args()    
 
     # Read in csv training file
     training_dir = args.data_dir
@@ -59,10 +61,13 @@ if __name__ == '__main__':
     
 
     ## TODO: Define a model 
-    model = None
+    model = GradientBoostingClassifier(n_estimators = args.n_estimators, 
+                                       learning_rate = args.learning_rate,
+                                       max_depth = args.max_depth)
     
     
     ## TODO: Train the model
+    model.fit(train_x, train_y) 
     
     
     
