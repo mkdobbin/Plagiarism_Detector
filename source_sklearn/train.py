@@ -10,7 +10,8 @@ import pandas as pd
 import joblib
 
 ## TODO: Import any additional libraries you need to define a model
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.svm import SVC
+from sklearn.model_selection import GridSearchCV
 
 # Provided model load function
 def model_fn(model_dir):
@@ -40,9 +41,11 @@ if __name__ == '__main__':
     parser.add_argument('--output-data-dir', type=str, default=os.environ['SM_OUTPUT_DATA_DIR'])
     parser.add_argument('--model-dir', type=str, default=os.environ['SM_MODEL_DIR'])
     parser.add_argument('--data-dir', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
-    parser.add_argument('--n_estimators', type=int, default=100)
-    parser.add_argument('--learning_rate', type=float, default=0.1)
-    parser.add_argument('--max_depth', type=int, default=3)
+    
+    # GradientBoosted Model Arguments
+    #parser.add_argument('--n_estimators', type=int, default=100)
+    #parser.add_argument('--learning_rate', type=float, default=0.1)
+    #parser.add_argument('--max_depth', type=int, default=3)
     
     
     # args holds all passed-in arguments
@@ -58,13 +61,17 @@ if __name__ == '__main__':
     
     
     ## --- Your code here --- ##
-    
 
     ## TODO: Define a model 
-    model = GradientBoostingClassifier(n_estimators = args.n_estimators, 
-                                       learning_rate = args.learning_rate,
-                                       max_depth = args.max_depth)
+    #model = GradientBoostingClassifier(n_estimators = args.n_estimators, 
+                                       #learning_rate = args.learning_rate,
+                                       #max_depth = args.max_depth)
     
+    #SVC model.
+    tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]},
+                        {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+    
+    model = GridSearchCV(SVC(), tuned_parameters)    
     
     ## TODO: Train the model
     model.fit(train_x, train_y) 
